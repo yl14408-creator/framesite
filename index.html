@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FrameSite — Generate Your Photography Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f7f4ef;--ink:#1c1a17;--muted:#8a8278;--border:#ddd9d2;
+  --accent:#c8a97e;--accent-dark:#9e7c52;--surface:#fff;
+  --serif:'Cormorant Garamond',Georgia,serif;--mono:'DM Mono',monospace;
+}
+html{background:var(--cream);color:var(--ink);font-family:var(--serif);font-size:16px}
+body{min-height:100vh}
+header{padding:1.5rem 2.5rem;border-bottom:1px solid var(--border);display:flex;align-items:baseline;justify-content:space-between}
+.logo{font-family:var(--mono);font-size:13px;letter-spacing:.2em;font-weight:300}
+.logo span{color:var(--accent-dark)}
+.sub{font-size:11px;font-family:var(--mono);color:var(--muted);letter-spacing:.1em}
+.app{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 60px)}
+.form-panel{background:var(--surface);border-right:1px solid var(--border);padding:1.5rem 1.5rem 3rem;overflow-y:auto}
+.panel-title{font-size:10px;font-family:var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.sec{font-size:10px;font-family:var(--mono);letter-spacing:.15em;color:var(--accent-dark);text-transform:uppercase;margin:1.5rem 0 .8rem;padding-top:1rem;border-top:1px solid var(--border)}
+.sec:first-of-type{margin-top:0;padding-top:0;border-top:none}
+.field{margin-bottom:1rem}
+label{display:block;font-size:11px;font-family:var(--mono);letter-spacing:.1em;color:var(--muted);margin-bottom:.35rem}
+input[type=text],textarea,select{width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--cream);border:1px solid var(--border);border-radius:3px;padding:.55rem .75rem;outline:none;transition:border-color .2s}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:72px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.35rem}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:.28rem .65rem;border:1px solid var(--border);border-radius:2px;cursor:pointer;color:var(--muted);background:transparent;transition:all .15s;user-select:none}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.gen-btn{width:100%;margin-top:1.8rem;background:var(--ink);color:var(--cream);font-family:var(--mono);font-size:12px;letter-spacing:.2em;padding:.85rem;border:none;border-radius:3px;cursor:pointer;transition:background .2s}
+.gen-btn:hover{background:#2e2c28}
+.gen-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+.preview-panel{overflow-y:auto;background:var(--cream)}
+.preview-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+.preview-title{font-size:10px;font-family:var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.dl-btn{font-family:var(--mono);font-size:11px;letter-spacing:.12em;padding:.4rem 1rem;background:var(--ink);color:var(--cream);border:none;border-radius:2px;cursor:pointer;opacity:0;transition:opacity .3s}
+.dl-btn.show{opacity:1}
+.preview-frame{width:100%;border:none;display:block}
+.empty-preview{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;text-align:center;opacity:.4}
+.empty-preview p{font-size:15px;font-style:italic;color:var(--muted);line-height:1.8}
+@media(max-width:900px){.app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Frame<span>Site</span></div>
+  <div class="sub">Generate your photography website</div>
+</header>
+<div class="app">
+  <div class="form-panel">
+    <div class="panel-title">Your details</div>
+
+    <div class="sec">Identity</div>
+    <div class="field"><label>Your name</label><input type="text" id="f-name" placeholder="e.g. Maya Chen"></div>
+    <div class="field"><label>Tagline (optional)</label><input type="text" id="f-tagline" placeholder="e.g. Wedding photographer, New York"></div>
+    <div class="field"><label>Specialty</label>
+      <select id="f-spec">
+        <option value="wedding">Wedding & Couples</option>
+        <option value="commercial">Commercial & Brand</option>
+        <option value="portrait">Portrait & Headshot</option>
+        <option value="documentary">Documentary & Street</option>
+        <option value="editorial">Editorial & Fashion</option>
+        <option value="fine art">Fine Art</option>
+      </select>
+    </div>
+    <div class="field"><label>Based in</label><input type="text" id="f-loc" placeholder="e.g. New York, NY"></div>
+    <div class="field"><label>Years shooting</label><input type="text" id="f-yrs" placeholder="e.g. 5 years"></div>
+    <div class="field"><label>Visual style</label><input type="text" id="f-style" placeholder="e.g. moody, intimate, film-inspired"></div>
+
+    <div class="sec">About</div>
+    <div class="field"><label>Your background / approach</label><textarea id="f-bio" placeholder="e.g. Started on film, communication major, spent time in Tokyo..."></textarea></div>
+    <div class="field"><label>Ideal client</label><textarea id="f-client" placeholder="e.g. Couples who want honest, unposed moments..."></textarea></div>
+
+    <div class="sec">Services</div>
+    <div class="field"><label>Packages & pricing</label><textarea id="f-pkg" placeholder="e.g. Half day $1,800 · Full day $3,200 · Engagement $650"></textarea></div>
+    <div class="field"><label>What's included</label><input type="text" id="f-del" placeholder="e.g. 400+ edited images, private gallery, print rights"></div>
+
+    <div class="sec">Contact</div>
+    <div class="field"><label>Email</label><input type="text" id="f-email" placeholder="hello@yourname.com"></div>
+    <div class="field"><label>Instagram handle (optional)</label><input type="text" id="f-ig" placeholder="@yourhandle"></div>
+
+    <div class="sec">Style</div>
+    <div class="field"><label>Color theme</label>
+      <div class="chips" id="chips-theme">
+        <div class="chip on" data-v="light">Light</div>
+        <div class="chip" data-v="dark">Dark</div>
+        <div class="chip" data-v="warm">Warm</div>
+      </div>
+    </div>
+    <div class="field"><label>Tone of voice</label>
+      <div class="chips" id="chips-tone">
+        <div class="chip on" data-v="warm">Warm</div>
+        <div class="chip" data-v="minimal">Minimal</div>
+        <div class="chip" data-v="editorial">Editorial</div>
+        <div class="chip" data-v="luxury">Luxury</div>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generate()">GENERATE WEBSITE →</button>
+  </div>
+
+  <div class="preview-panel">
+    <div class="preview-header">
+      <div class="preview-title">Live preview</div>
+      <button class="dl-btn" id="dlBtn" onclick="download()">DOWNLOAD HTML</button>
+    </div>
+    <div id="previewWrap">
+      <div class="empty-preview">
+        <p>Your website will<br>appear here.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('#chips-theme .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#chips-theme .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');});
+document.querySelectorAll('#chips-tone .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#chips-tone .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');});
+
+function getChip(id){return(document.querySelector(`#${id} .chip.on`)||{}).dataset?.v||'';}
+
+const tones={warm:'conversational, personal, emotionally resonant',minimal:'clean and sparse — every word earns its place',editorial:'confident, sophisticated, magazine-quality',luxury:'elevated, refined, aspirational'};
+
+const themes={
+  light:{bg:'#f7f4ef',ink:'#1c1a17',muted:'#8a8278',border:'#ddd9d2',accent:'#c8a97e',surface:'#ffffff'},
+  dark:{bg:'#141210',ink:'#e8e4de',muted:'#7a736a',border:'#2e2b28',accent:'#c8a97e',surface:'#1c1a17'},
+  warm:{bg:'#faf5ee',ink:'#2a1f10',muted:'#9a7e5a',border:'#e8d9c2',accent:'#b8732a',surface:'#fff8f0'}
+};
+
+let generatedHTML = '';
+
+async function generate(){
+  const name=document.getElementById('f-name').value||'Photographer';
+  const tagline=document.getElementById('f-tagline').value;
+  const spec=document.getElementById('f-spec').value;
+  const loc=document.getElementById('f-loc').value;
+  const yrs=document.getElementById('f-yrs').value;
+  const style=document.getElementById('f-style').value;
+  const bio=document.getElementById('f-bio').value;
+  const client=document.getElementById('f-client').value;
+  const pkg=document.getElementById('f-pkg').value;
+  const del=document.getElementById('f-del').value;
+  const email=document.getElementById('f-email').value;
+  const ig=document.getElementById('f-ig').value;
+  const theme=getChip('chips-theme')||'light';
+  const tone=getChip('chips-tone')||'warm';
+  const t=themes[theme];
+
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.textContent='GENERATING...';
+
+  const prompt=`You are an expert photographer website copywriter. Generate complete, polished website copy for a photographer. Return ONLY a valid complete HTML file — no explanation, no markdown, just raw HTML starting with <!DOCTYPE html>.
+
+PHOTOGRAPHER DETAILS:
+Name: ${name}
+Tagline: ${tagline||spec+' photographer'+( loc?' · '+loc:'')}
+Specialty: ${spec}
+Location: ${loc||'New York'}
+Experience: ${yrs||'several years'}
+Visual style: ${style||'moody, atmospheric'}
+Background: ${bio||'passionate photographer with an eye for authentic moments'}
+Ideal client: ${client||'people who value genuine, unposed photography'}
+Packages: ${pkg||'contact for pricing'}
+Deliverables: ${del||'edited images, private gallery, print rights'}
+Email: ${email||'hello@'+name.toLowerCase().replace(/\s/g,'')+'.com'}
+Instagram: ${ig||''}
+Tone: ${tones[tone]}
+
+Generate a complete single-page photography portfolio website HTML file with these exact sections:
+1. Navigation (name/logo + nav links: Work, About, Services, Contact)
+2. Hero section (large headline, tagline, brief intro)
+3. Work/Portfolio section (6 placeholder image boxes in a grid with captions)
+4. About section (2-3 paragraphs about the photographer)
+5. Services section (packages with pricing and what's included)
+6. FAQ section (5 Q&As)
+7. Contact section (email, instagram if provided, short inviting text)
+8. Footer
+
+DESIGN REQUIREMENTS — follow exactly:
+- Use Google Fonts: Cormorant Garamond (serif, weights 300,400,italic) + DM Mono (mono, weights 300,400)
+- Color palette: background ${t.bg}, text ${t.ink}, muted text ${t.muted}, borders ${t.border}, accent ${t.accent}, surface ${t.surface}
+- Placeholder images: use solid color divs with aspect-ratio:3/2, background color alternating between ${t.border} and a slightly different shade, with a centered caption
+- Typography: headlines in Cormorant Garamond, body/labels in DM Mono for labels, Cormorant for body text
+- Layout: clean, editorial, generous whitespace, max-width 1100px centered
+- Navigation: sticky, minimal, horizontal
+- Work grid: 3 columns on desktop, 2 on tablet, 1 on mobile
+- All sections have proper padding (80px vertical on desktop)
+- Mobile responsive with media queries
+- Smooth scroll behavior
+- No JavaScript except smooth scroll
+- Include a <meta> viewport tag
+- Make it beautiful, production-ready, and something a real photographer would be proud to show clients
+
+Write ALL the copy from scratch using the photographer's details. Make it specific, not generic. No placeholder text.`;
+
+  try{
+    const res=await fetch('/api/generate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    let html=data.content[0].text;
+    html=html.replace(/```html\n?/g,'').replace(/```\n?/g,'').trim();
+    generatedHTML=html;
+    showPreview(html);
+    document.getElementById('dlBtn').classList.add('show');
+  }catch(e){
+    document.getElementById('previewWrap').innerHTML=`<div style="padding:2rem;color:#b05555;font-family:monospace;font-size:13px">Error: ${e.message}<br><br>Note: This tool requires a server-side API proxy to run. Deploy to Vercel with an API route to use with real users.</div>`;
+  }
+  btn.disabled=false;btn.textContent='GENERATE WEBSITE →';
+}
+
+function showPreview(html){
+  const wrap=document.getElementById('previewWrap');
+  wrap.innerHTML='<iframe id="previewFrame" class="preview-frame" style="min-height:800px"></iframe>';
+  const frame=document.getElementById('previewFrame');
+  const doc=frame.contentDocument||frame.contentWindow.document;
+  doc.open();doc.write(html);doc.close();
+  setTimeout(()=>{
+    const h=doc.body?.scrollHeight;
+    if(h)frame.style.height=h+'px';
+  },500);
+}
+
+function download(){
+  if(!generatedHTML)return;
+  const name=(document.getElementById('f-name').value||'photographer').toLowerCase().replace(/\s/g,'-');
+  const blob=new Blob([generatedHTML],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=name+'-website.html';
+  a.click();
+}
+</script>
+</body>
+</html>
